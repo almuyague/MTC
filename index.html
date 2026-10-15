@@ -37,8 +37,8 @@ p{margin:0 0 18px}
 .boton{display:inline-block;margin-top:16px;padding:13px 23px;border:1px solid var(--verde);border-radius:3px;background:var(--verde);color:white;font-size:14px;text-decoration:none}
 .boton:hover{background:#28554d}
 figure{margin:0;text-align:center;min-width:0}
-.imagen{display:grid;place-items:center;aspect-ratio:1;border:1px solid var(--linea);border-radius:50%;background:transparent;isolation:isolate}
-.imagen img{display:block;width:82%;height:auto;object-fit:contain;background:transparent;mix-blend-mode:multiply}
+.imagen{position:relative;width:100%;aspect-ratio:1;border:1px solid var(--linea);border-radius:50%;overflow:hidden;background:transparent;isolation:isolate}
+.imagen img{position:absolute;display:block;inset:15%;width:70%;height:70%;object-fit:contain;background:transparent;mix-blend-mode:multiply}
 figcaption{margin-top:18px;color:var(--texto);font-size:11px;letter-spacing:.12em;text-transform:uppercase}
 .seccion{display:grid;grid-template-columns:1fr 1.7fr;gap:65px;padding-block:55px;border-top:1px solid var(--linea)}
 .contenido{min-width:0;color:var(--texto)}
@@ -79,7 +79,7 @@ footer{border-top:1px solid var(--linea);border-bottom:0;color:var(--texto);font
 <main id="inicio" class="contenedor">
   <section class="portada" aria-labelledby="titulo">
     <div>
-      <p class="etiqueta" data-t="eyebrow">Bone heritage · Conservation-restoration</p>
+      <p class="etiqueta" data-t="eyebrow">Palaeontological heritage · Conservation-restoration</p>
       <h1 id="titulo" data-t="heroTitle">From taphonomic processes to conservation decisions.</h1>
       <p class="introduccion" data-t="heroText">The Taphonomic Model for Conservation (MTC) is a tool that supports conservation-restoration diagnosis of Pleistocene bone remains.</p>
       <a class="boton" href="#modelo" data-t="explore">Explore the model</a>
@@ -162,7 +162,7 @@ footer{border-top:1px solid var(--linea);border-bottom:0;color:var(--texto);font
 const spanish = {
   skip: 'Saltar al contenido',
   navModel: 'El modelo', navHow: 'Funcionamiento', navAuthor: 'Autoría', navAccess: 'Acceso',
-  eyebrow: 'Patrimonio óseo · Conservación-restauración',
+  eyebrow: 'Patrimonio paleontológico · Conservación-restauración',
   heroTitle: 'Del proceso tafonómico a la decisión de conservación.',
   heroText: "El Modelo Tafonómico para Conservación (MTC) es una herramienta de apoyo al diagnóstico de conservación-restauración de restos óseos pleistocenos.",
   explore: 'Conocer el modelo', caption: 'Observar · Interpretar · Conservar',
