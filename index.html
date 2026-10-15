@@ -1,576 +1,216 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="author" content="Almudena S. Yagüe">
-  <meta name="description" content="Modelo Tafonómico para Conservación: diagnóstico del patrimonio óseo arqueológico y paleontológico con apoyo de inteligencia artificial.">
-  <meta name="theme-color" content="#173c37">
-
-  <title>MTC · Modelo Tafonómico para Conservación</title>
-
-  <style>
-    :root {
-      --fondo: #f5f3ed;
-      --verde: #173c37;
-      --texto: #52655f;
-      --linea: #ccd4cb;
-      --suave: #e3e9df;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-      scroll-padding-top: 24px;
-    }
-
-    body {
-      margin: 0;
-      background: var(--fondo);
-      color: var(--verde);
-      font-family: system-ui, -apple-system, sans-serif;
-      font-size: 17px;
-      line-height: 1.7;
-    }
-
-    a {
-      color: inherit;
-      text-underline-offset: 5px;
-    }
-
-    a:focus-visible {
-      outline: 3px solid #bc702e;
-      outline-offset: 5px;
-    }
-
-    .contenedor {
-      width: min(1120px, calc(100% - 64px));
-      margin: auto;
-    }
-
-    .saltar {
-      position: absolute;
-      top: -100px;
-      left: 16px;
-      padding: 12px;
-      background: white;
-      z-index: 10;
-    }
-
-    .saltar:focus {
-      top: 16px;
-    }
-
-    header {
-      border-bottom: 1px solid var(--linea);
-    }
-
-    .cabecera {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 24px;
-      padding-block: 25px;
-    }
-
-    .marca {
-      font-size: 23px;
-      font-weight: 750;
-      letter-spacing: .08em;
-      text-decoration: none;
-    }
-
-    nav {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 24px;
-      font-size: 14px;
-    }
-
-    nav a {
-      text-decoration: none;
-    }
-
-    nav a:hover {
-      text-decoration: underline;
-    }
-
-    .portada {
-      display: grid;
-      grid-template-columns: 1.4fr .8fr;
-      align-items: center;
-      gap: 65px;
-      padding-block: 85px;
-    }
-
-    .etiqueta {
-      margin: 0 0 20px;
-      font-size: 11px;
-      font-weight: 750;
-      letter-spacing: .15em;
-      text-transform: uppercase;
-    }
-
-    h1,
-    h2 {
-      font-family: Georgia, serif;
-      font-weight: 400;
-    }
-
-    h1 {
-      margin: 0 0 28px;
-      font-size: clamp(42px, 5.5vw, 68px);
-      line-height: 1.08;
-      letter-spacing: -.045em;
-    }
-
-    h2 {
-      margin: 0;
-      font-size: 34px;
-      line-height: 1.2;
-      letter-spacing: -.025em;
-    }
-
-    p {
-      margin: 0 0 18px;
-    }
-
-    .introduccion {
-      max-width: 610px;
-      color: var(--texto);
-      font-size: 19px;
-    }
-
-    .boton {
-      display: inline-block;
-      margin-top: 16px;
-      padding: 13px 23px;
-      border: 1px solid var(--verde);
-      border-radius: 3px;
-      background: var(--verde);
-      color: white;
-      font-size: 14px;
-      text-decoration: none;
-    }
-
-    .boton:hover {
-      background: #28554d;
-    }
-
-    figure {
-      margin: 0;
-      text-align: center;
-    }
-
-    .imagen {
-      display: grid;
-      place-items: center;
-      aspect-ratio: 1;
-      border: 1px solid var(--linea);
-      border-radius: 50%;
-      background: white;
-    }
-
-    .imagen img {
-      display: block;
-      width: 82%;
-      height: auto;
-      object-fit: contain;
-    }
-
-    figcaption {
-      margin-top: 18px;
-      color: var(--texto);
-      font-size: 11px;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-    }
-
-    .seccion {
-      display: grid;
-      grid-template-columns: 1fr 1.7fr;
-      gap: 65px;
-      padding-block: 55px;
-      border-top: 1px solid var(--linea);
-    }
-
-    .contenido {
-      min-width: 0;
-      color: var(--texto);
-    }
-
-    .secuencia {
-      margin-block: 25px;
-      color: var(--verde);
-      font-family: Georgia, serif;
-      font-size: 25px;
-      line-height: 1.6;
-    }
-
-    .niveles {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-block: 25px;
-      padding: 0;
-      list-style: none;
-    }
-
-    .niveles li {
-      padding: 9px 16px;
-      border: 1px solid var(--linea);
-      background: var(--suave);
-      color: var(--verde);
-      font-size: 15px;
-      font-weight: 650;
-    }
-
-    .nota {
-      margin-top: 25px;
-      padding-left: 18px;
-      border-left: 2px solid var(--verde);
-      font-size: 14px;
-    }
-
-    .destacado {
-      margin-top: 25px;
-      padding: 28px;
-      background: var(--verde);
-      color: var(--fondo);
-    }
-
-    .destacado p {
-      margin: 0;
-    }
-
-    .nombre {
-      color: var(--verde);
-      font-family: Georgia, serif;
-      font-size: 27px;
-    }
-
-    footer {
-      border-top: 1px solid var(--linea);
-      color: var(--texto);
-      font-size: 12px;
-    }
-
-    .pie {
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 15px;
-      padding-block: 25px;
-    }
-
-    .pie p {
-      margin: 0;
-    }
-
-    @media (max-width: 760px) {
-      .contenedor {
-        width: calc(100% - 40px);
-      }
-
-      .cabecera {
-        align-items: flex-start;
-      }
-
-      nav {
-        gap: 12px;
-        font-size: 12px;
-      }
-
-      .portada {
-        grid-template-columns: 1fr;
-        gap: 38px;
-        padding-block: 50px;
-      }
-
-      figure {
-        width: min(270px, 100%);
-        margin-inline: auto;
-      }
-
-      .seccion {
-        grid-template-columns: 1fr;
-        gap: 25px;
-        padding-block: 38px;
-      }
-
-      h2 {
-        font-size: 30px;
-      }
-    }
-
-    @media (max-width: 420px) {
-      .cabecera {
-        flex-direction: column;
-        gap: 12px;
-      }
-
-      h1 {
-        font-size: 42px;
-      }
-
-      .secuencia {
-        font-size: 22px;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      html {
-        scroll-behavior: auto;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Almudena S. Yagüe">
+<meta name="description" content="MTC: a tool supporting conservation-restoration diagnosis of Pleistocene bone remains, implemented using artificial intelligence.">
+<meta name="theme-color" content="#173c37">
+<title>MTC · Taphonomic Model for Conservation</title>
+<style>
+:root{--fondo:#f5f3ed;--verde:#173c37;--texto:#52655f;--linea:#ccd4cb;--suave:#e3e9df}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:24px}
+body{margin:0;background:var(--fondo);color:var(--verde);font:17px/1.7 system-ui,-apple-system,sans-serif}
+a{color:inherit;text-underline-offset:5px}
+a:focus-visible,button:focus-visible{outline:3px solid #bc702e;outline-offset:5px}
+.contenedor{width:min(1120px,calc(100% - 64px));margin:auto}
+.saltar{position:absolute;top:-100px;left:16px;padding:12px;background:white;z-index:10}
+.saltar:focus{top:16px}
+header,footer{border-bottom:1px solid var(--linea)}
+.cabecera{display:flex;justify-content:space-between;align-items:center;gap:24px;padding-block:25px}
+.marca{font-size:23px;font-weight:750;letter-spacing:.08em;text-decoration:none}
+.menu{display:flex;align-items:center;flex-wrap:wrap;gap:25px}
+nav{display:flex;flex-wrap:wrap;gap:20px;font-size:14px}
+nav a{text-decoration:none}
+nav a:hover{text-decoration:underline}
+.idiomas{display:flex;gap:4px}
+.idiomas button{border:1px solid var(--linea);border-radius:3px;background:transparent;color:var(--verde);padding:7px 10px;font:600 12px system-ui;cursor:pointer}
+.idiomas button[aria-pressed="true"]{background:var(--verde);color:white;border-color:var(--verde)}
+.portada{display:grid;grid-template-columns:1.4fr .8fr;align-items:center;gap:65px;padding-block:85px}
+.etiqueta{margin:0 0 20px;font-size:11px;font-weight:750;letter-spacing:.15em;text-transform:uppercase}
+h1,h2{font-family:Georgia,serif;font-weight:400}
+h1{margin:0 0 28px;font-size:clamp(42px,5.5vw,68px);line-height:1.08;letter-spacing:-.045em}
+h2{margin:0;font-size:34px;line-height:1.2;letter-spacing:-.025em}
+p{margin:0 0 18px}
+.introduccion{max-width:610px;color:var(--texto);font-size:19px}
+.boton{display:inline-block;margin-top:16px;padding:13px 23px;border:1px solid var(--verde);border-radius:3px;background:var(--verde);color:white;font-size:14px;text-decoration:none}
+.boton:hover{background:#28554d}
+figure{margin:0;text-align:center;min-width:0}
+.imagen{display:grid;place-items:center;aspect-ratio:1;border:1px solid var(--linea);border-radius:50%;background:transparent;isolation:isolate}
+.imagen img{display:block;width:82%;height:auto;object-fit:contain;background:transparent;mix-blend-mode:multiply}
+figcaption{margin-top:18px;color:var(--texto);font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+.seccion{display:grid;grid-template-columns:1fr 1.7fr;gap:65px;padding-block:55px;border-top:1px solid var(--linea)}
+.contenido{min-width:0;color:var(--texto)}
+.secuencia{margin-block:25px;color:var(--verde);font:25px/1.6 Georgia,serif}
+.niveles{display:flex;flex-wrap:wrap;gap:8px;margin-block:25px;padding:0;list-style:none}
+.niveles li{padding:9px 16px;border:1px solid var(--linea);background:var(--suave);color:var(--verde);font-size:15px;font-weight:650}
+.nota{margin-top:25px;padding-left:18px;border-left:2px solid var(--verde);font-size:14px}
+.destacado{margin-top:25px;padding:28px;background:var(--verde);color:var(--fondo)}
+.destacado p{margin:0}
+.nombre{color:var(--verde);font:27px/1.4 Georgia,serif}
+footer{border-top:1px solid var(--linea);border-bottom:0;color:var(--texto);font-size:12px}
+.pie{display:flex;justify-content:space-between;flex-wrap:wrap;gap:15px;padding-block:25px}
+.pie p{margin:0}
+@media(max-width:760px){.contenedor{width:calc(100% - 40px)}.cabecera{align-items:flex-start}.menu{justify-content:flex-end;gap:12px}nav{gap:12px;font-size:12px}.portada{grid-template-columns:1fr;gap:38px;padding-block:50px}figure{width:min(270px,100%);margin-inline:auto}.seccion{grid-template-columns:1fr;gap:25px;padding-block:38px}h2{font-size:30px}}
+@media(max-width:420px){.cabecera{flex-direction:column;gap:12px}.menu{justify-content:flex-start}h1{font-size:42px}.secuencia{font-size:22px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
 </head>
-
 <body>
-  <a class="saltar" href="#inicio">Saltar al contenido</a>
-
-  <header>
-    <div class="contenedor cabecera">
-      <a class="marca" href="#inicio" aria-label="MTC, inicio">MTC</a>
-
-      <nav aria-label="Navegación principal">
-        <a href="#modelo">El modelo</a>
-        <a href="#funcionamiento">Funcionamiento</a>
-        <a href="#autoria">Autoría</a>
-        <a href="#acceso">Acceso</a>
+<a class="saltar" href="#inicio" data-t="skip">Skip to content</a>
+<header>
+  <div class="contenedor cabecera">
+    <a class="marca" href="#inicio">MTC</a>
+    <div class="menu">
+      <nav aria-label="Main navigation" id="navegacion">
+        <a href="#modelo" data-t="navModel">The model</a>
+        <a href="#funcionamiento" data-t="navHow">How it works</a>
+        <a href="#autoria" data-t="navAuthor">Author</a>
+        <a href="#acceso" data-t="navAccess">Access</a>
       </nav>
+      <div class="idiomas" role="group" aria-label="Language / Idioma">
+        <button type="button" lang="en" aria-label="English" aria-pressed="true" data-lang="en">EN</button>
+        <button type="button" lang="es" aria-label="Castellano" aria-pressed="false" data-lang="es">ES</button>
+      </div>
     </div>
-  </header>
-
-  <main id="inicio" class="contenedor">
-    <section class="portada" aria-labelledby="titulo">
-      <div>
-        <p class="etiqueta">
-          Patrimonio óseo · Conservación-restauración
-        </p>
-
-        <h1 id="titulo">
-          Del proceso tafonómico a la decisión de conservación.
-        </h1>
-
-        <p class="introduccion">
-          El Modelo Tafonómico para Conservación (MTC)
-          estructura el diagnóstico del patrimonio óseo
-          arqueológico y paleontológico con apoyo de
-          inteligencia artificial.
-        </p>
-
-        <a class="boton" href="#modelo">
-          Conocer el modelo
-        </a>
-      </div>
-
-      <figure>
-        <div class="imagen">
-          <img
-            src="mtc-skull.png"
-            alt="Cráneo ilustrado en tinta negra, imagen de MTC"
-            width="256"
-            height="256"
-            fetchpriority="high"
-          >
-        </div>
-
-        <figcaption>
-          Observar · Interpretar · Conservar
-        </figcaption>
-      </figure>
-    </section>
-
-    <section id="modelo" class="seccion" aria-labelledby="titulo-modelo">
-      <div>
-        <p class="etiqueta">01 / El modelo</p>
-        <h2 id="titulo-modelo">
-          Interpretar la alteración para orientar la conservación.
-        </h2>
-      </div>
-
-      <div class="contenido">
-        <p>
-          MTC relaciona la evidencia observada con los procesos
-          tafonómicos, las alteraciones y sus implicaciones
-          para la estabilidad del material óseo.
-        </p>
-
-        <p class="secuencia">
-          Evidencia → proceso tafonómico → alteración →
-          consecuencia estructural → implicación conservativa.
-        </p>
-
-        <p>
-          Su implementación en ChatGPT utiliza instrucciones
-          y documentos de referencia para guiar un diagnóstico
-          estructurado, distinguiendo la evidencia observada,
-          la inferencia tafonómica, el riesgo conservativo
-          y la decisión operativa.
-        </p>
-      </div>
-    </section>
-
-    <section
-      id="funcionamiento"
-      class="seccion"
-      aria-labelledby="titulo-funcionamiento"
-    >
-      <div>
-        <p class="etiqueta">02 / Funcionamiento</p>
-        <h2 id="titulo-funcionamiento">
-          Un recorrido secuencial, de N0 a N6.
-        </h2>
-      </div>
-
-      <div class="contenido">
-        <p>
-          El análisis se organiza en siete niveles consecutivos.
-          Cada nivel debe cerrarse antes de avanzar, manteniendo
-          la relación entre el contexto, la evidencia aportada
-          y la interpretación diagnóstica.
-        </p>
-
-        <ol class="niveles" aria-label="Niveles del modelo">
-          <li>N0</li>
-          <li>N1</li>
-          <li>N2</li>
-          <li>N3</li>
-          <li>N4</li>
-          <li>N5</li>
-          <li>N6</li>
-        </ol>
-
-        <p>
-          Para comenzar, abre MTC en ChatGPT e indica:
-          «Quiero iniciar un diagnóstico con el MTC».
-          El asistente solicitará el idioma y un identificador
-          del caso con el formato
-          <strong>MTC-[YACIMIENTO]-[IDENTIFICADOR]</strong>.
-        </p>
-
-        <p>
-          El recorrido culmina en una evaluación funcional
-          orientada al diagnóstico y a las implicaciones
-          para la conservación-restauración.
-        </p>
-      </div>
-    </section>
-
-    <section
-      id="alcance"
-      class="seccion"
-      aria-labelledby="titulo-alcance"
-    >
-      <div>
-        <p class="etiqueta">03 / Alcance</p>
-        <h2 id="titulo-alcance">
-          Apoyo al análisis profesional.
-        </h2>
-      </div>
-
-      <div class="contenido">
-        <p>
-          La utilidad de las salidas depende de la calidad
-          de la información aportada y de la consulta correcta
-          de los documentos del modelo. Las inferencias
-          deben identificarse y contrastarse con los restos
-          y su contexto.
-        </p>
-
-        <div class="destacado">
-          <p>
-            Las salidas del asistente requieren revisión
-            profesional y deben contrastarse con la evidencia
-            disponible y la evaluación directa del patrimonio.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <section
-      id="autoria"
-      class="seccion"
-      aria-labelledby="titulo-autoria"
-    >
-      <div>
-        <p class="etiqueta">04 / Autoría</p>
-        <h2 id="titulo-autoria">
-          Desarrollo e investigación.
-        </h2>
-      </div>
-
-      <div class="contenido">
-        <p class="nombre">Almudena S. Yagüe</p>
-
-        <p>
-          Conservadora-restauradora especializada en patrimonio
-          arqueológico y paleontológico. Trabaja como técnica
-          de Conservación y Restauración del ICP.
-        </p>
-
-        <p>
-          Licenciada en Bellas Artes, máster en Comisariado
-          de Arte y Nuevos Medios y experta en Tecnologías
-          Avanzadas para la Difusión y Puesta en Valor del
-          Patrimonio Cultural por la UNED.
-        </p>
-
-        <p>
-          Su tesis doctoral, recientemente depositada en la
-          Universitat de Barcelona, desarrolla un sistema
-          diagnóstico basado en IA para la conservación
-          de restos óseos pleistocenos.
-        </p>
-
-        <a href="https://orcid.org/0000-0002-4051-0043" rel="me">
-          ORCID · 0000-0002-4051-0043 ↗
-        </a>
-      </div>
-    </section>
-
-    <section
-      id="acceso"
-      class="seccion"
-      aria-labelledby="titulo-acceso"
-    >
-      <div>
-        <p class="etiqueta">05 / Acceso</p>
-        <h2 id="titulo-acceso">MTC en ChatGPT.</h2>
-      </div>
-
-      <div class="contenido">
-        <p>
-          El complemento permite acceder a la implementación
-          del modelo en ChatGPT.
-        </p>
-
-        <a
-          class="boton"
-          href="https://chatgpt.com/plugins/plugin_6eb374638fc88191b59340d0cf6382dc"
-        >
-          Ver complemento en ChatGPT ↗
-        </a>
-
-        <p class="nota">
-          El acceso depende de la disponibilidad del complemento
-          y de las opciones de tu cuenta de ChatGPT.
-          Esta página presenta el proyecto; el diagnóstico
-          se realiza dentro de ChatGPT.
-        </p>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <div class="contenedor pie">
-      <p>MTC · Modelo Tafonómico para Conservación</p>
-      <p>Almudena S. Yagüe</p>
+  </div>
+</header>
+<main id="inicio" class="contenedor">
+  <section class="portada" aria-labelledby="titulo">
+    <div>
+      <p class="etiqueta" data-t="eyebrow">Bone heritage · Conservation-restoration</p>
+      <h1 id="titulo" data-t="heroTitle">From taphonomic processes to conservation decisions.</h1>
+      <p class="introduccion" data-t="heroText">The Taphonomic Model for Conservation (MTC) is a tool that supports conservation-restoration diagnosis of Pleistocene bone remains.</p>
+      <a class="boton" href="#modelo" data-t="explore">Explore the model</a>
     </div>
-  </footer>
+    <figure>
+      <div class="imagen">
+        <img id="craneo" src="mtc-skull.png" alt="Skull illustration in black ink, the MTC image" width="256" height="256" fetchpriority="high">
+      </div>
+      <figcaption data-t="caption">Observe · Interpret · Conserve</figcaption>
+    </figure>
+  </section>
+  <section id="modelo" class="seccion" aria-labelledby="titulo-modelo">
+    <div>
+      <p class="etiqueta" data-t="modelLabel">01 / The model</p>
+      <h2 id="titulo-modelo" data-t="modelTitle">Interpreting alteration to guide conservation.</h2>
+    </div>
+    <div class="contenido">
+      <p data-t="modelText">MTC organises information through a hierarchical sequence that connects the context of the find and observable alterations with taphonomic variables and trajectories, the functional stability of the fossil and conservation-restoration needs.</p>
+      <p class="secuencia" data-t="sequence">Observed evidence → taphonomic interpretation → assessment of stability and risk → conservation-restoration needs.</p>
+      <p data-t="implementation">Artificial intelligence serves as a tool for executing the methodological architecture previously defined in MTC. Its implementation in ChatGPT uses specific protocols, validation rules and traceability mechanisms to support expert review throughout the diagnostic process.</p>
+    </div>
+  </section>
+  <section id="funcionamiento" class="seccion" aria-labelledby="titulo-funcionamiento">
+    <div>
+      <p class="etiqueta" data-t="howLabel">02 / How it works</p>
+      <h2 id="titulo-funcionamiento" data-t="howTitle">A sequential workflow, from N0 to N6.</h2>
+    </div>
+    <div class="contenido">
+      <p data-t="howText">The analysis is organised into seven consecutive levels. Each level must be completed before proceeding, maintaining the relationship between context, the evidence provided and diagnostic interpretation.</p>
+      <ol class="niveles" id="niveles" aria-label="Model levels">
+        <li>N0</li><li>N1</li><li>N2</li><li>N3</li><li>N4</li><li>N5</li><li>N6</li>
+      </ol>
+      <p data-t="start">To begin, open MTC in ChatGPT and enter: “I want to initiate a diagnosis using the MTC”. The assistant will ask for your language and a case identifier in the format MTC-[SITE]-[IDENTIFIER].</p>
+      <p data-t="outcome">At N6, the functional assessment translates the validated information into conservation criteria. It generates two complementary outputs: a complete taphonomic diagnosis (L6-DIAG) and an overall conservation record (L6-FC), linking technical decisions to the evidence on which they are based.</p>
+    </div>
+  </section>
+  <section id="alcance" class="seccion" aria-labelledby="titulo-alcance">
+    <div>
+      <p class="etiqueta" data-t="scopeLabel">03 / Scope</p>
+      <h2 id="titulo-alcance" data-t="scopeTitle">Supporting professional analysis.</h2>
+    </div>
+    <div class="contenido">
+      <p data-t="scopeText">MTC is an initial operational version developed as a minimum viable product (MVP). Its application in the thesis is limited to Pleistocene bone remains in the contexts studied. Extending it to other assemblages and contexts requires further testing and validation.</p>
+      <p data-t="validation">The thesis reports an initial retrospective methodological and operational validation in assemblages from five Pleistocene sites in the Iberian Peninsula, comparing MTC diagnoses with previously documented conservation-restoration interventions. This evaluation does not, by itself, validate the current plugin implementation.</p>
+      <div class="destacado"><p data-t="review">The diagnostic process remains subject to expert review. Observed evidence, taphonomic inferences, risks of deterioration and technical conservation decisions must remain distinguishable.</p></div>
+    </div>
+  </section>
+  <section id="autoria" class="seccion" aria-labelledby="titulo-autoria">
+    <div>
+      <p class="etiqueta" data-t="authorLabel">04 / Author</p>
+      <h2 id="titulo-autoria" data-t="authorTitle">Development and research.</h2>
+    </div>
+    <div class="contenido">
+      <p class="nombre">Almudena S. Yagüe</p>
+      <p data-t="bio1">Conservator-restorer specialising in archaeological and palaeontological heritage. She works as a conservation and restoration technician at the ICP.</p>
+      <p data-t="bio2">She holds a degree in Fine Arts, a master’s degree in Curating Art and New Media, and an Expert qualification in Advanced Technologies for the Dissemination and Enhancement of Cultural Heritage from UNED.</p>
+      <p data-t="bio3">Her doctoral thesis, recently submitted to the University of Barcelona, develops an AI-based diagnostic system for the conservation of Pleistocene bone remains.</p>
+      <a href="https://orcid.org/0000-0002-4051-0043" rel="me">ORCID · 0000-0002-4051-0043 ↗</a>
+    </div>
+  </section>
+  <section id="acceso" class="seccion" aria-labelledby="titulo-acceso">
+    <div>
+      <p class="etiqueta" data-t="accessLabel">05 / Access</p>
+      <h2 id="titulo-acceso" data-t="accessTitle">MTC in ChatGPT.</h2>
+    </div>
+    <div class="contenido">
+      <p data-t="accessText">The plugin provides access to the model’s implementation in ChatGPT.</p>
+      <a class="boton" href="https://chatgpt.com/plugins/plugin_6eb374638fc88191b59340d0cf6382dc" data-t="accessButton">View plugin in ChatGPT ↗</a>
+      <p class="nota" data-t="accessNote">Access depends on plugin availability and the options included in your ChatGPT account. This page presents the project; diagnosis takes place within ChatGPT.</p>
+    </div>
+  </section>
+</main>
+<footer>
+  <div class="contenedor pie">
+    <p data-t="footer">MTC · Taphonomic Model for Conservation</p>
+    <p>Almudena S. Yagüe</p>
+  </div>
+</footer>
+<script>
+const spanish = {
+  skip: 'Saltar al contenido',
+  navModel: 'El modelo', navHow: 'Funcionamiento', navAuthor: 'Autoría', navAccess: 'Acceso',
+  eyebrow: 'Patrimonio óseo · Conservación-restauración',
+  heroTitle: 'Del proceso tafonómico a la decisión de conservación.',
+  heroText: "El Modelo Tafonómico para Conservación (MTC) es una herramienta de apoyo al diagnóstico de conservación-restauración de restos óseos pleistocenos.",
+  explore: 'Conocer el modelo', caption: 'Observar · Interpretar · Conservar',
+  modelLabel: '01 / El modelo', modelTitle: 'Interpretar la alteración para orientar la conservación.',
+  modelText: "El MTC organiza la información mediante una secuencia jerárquica que conecta el contexto del hallazgo y las alteraciones observables con las variables y trayectorias tafonómicas, la estabilidad funcional del fósil y las necesidades de conservación-restauración.",
+  sequence: "Evidencia observada → interpretación tafonómica → evaluación de la estabilidad y el riesgo → necesidades de conservación-restauración.",
+  implementation: "La inteligencia artificial funciona como herramienta de ejecución de la arquitectura metodológica previamente definida en el MTC. Su implementación en ChatGPT utiliza protocolos específicos, reglas de validación y mecanismos de trazabilidad para facilitar la revisión experta durante todo el proceso diagnóstico.",
+  howLabel: '02 / Funcionamiento', howTitle: 'Un recorrido secuencial, de N0 a N6.',
+  howText: 'El análisis se organiza en siete niveles consecutivos. Cada nivel debe cerrarse antes de avanzar, manteniendo la relación entre el contexto, la evidencia aportada y la interpretación diagnóstica.',
+  start: 'Para comenzar, abre MTC en ChatGPT e indica: «Quiero iniciar un diagnóstico con el MTC». El asistente solicitará el idioma y un identificador del caso con el formato MTC-[YACIMIENTO]-[IDENTIFICADOR].',
+  outcome: "En N6, la evaluación funcional traduce la información validada en criterios de conservación. Genera dos salidas complementarias: el diagnóstico tafonómico completo (L6-DIAG) y la ficha global de conservación (L6-FC), vinculando las decisiones técnicas con la evidencia que las sustenta.",
+  scopeLabel: '03 / Alcance', scopeTitle: 'Apoyo al análisis profesional.',
+  scopeText: "El MTC constituye una primera versión operativa desarrollada como producto mínimo viable (MVP). Su aplicación en la tesis se limita a restos óseos pleistocenos en los contextos estudiados. Su ampliación a otros conjuntos y contextos requiere nuevas pruebas y validaciones.",
+  validation: "La tesis recoge una primera validación metodológica y operativa, de carácter retrospectivo, en conjuntos de cinco yacimientos pleistocenos de la península ibérica, mediante la comparación de los diagnósticos del MTC con intervenciones de conservación-restauración previamente documentadas. Esta evaluación no valida por sí sola la implementación actual del complemento.",
+  review: "El proceso diagnóstico mantiene la revisión experta. Deben distinguirse la evidencia observada, las inferencias tafonómicas, los riesgos de deterioro y las decisiones técnicas de conservación.",
+  authorLabel: '04 / Autoría', authorTitle: 'Desarrollo e investigación.',
+  bio1: 'Conservadora-restauradora especializada en patrimonio arqueológico y paleontológico. Trabaja como técnica de Conservación y Restauración del ICP.',
+  bio2: 'Licenciada en Bellas Artes, máster en Comisariado de Arte y Nuevos Medios y experta en Tecnologías Avanzadas para la Difusión y Puesta en Valor del Patrimonio Cultural por la UNED.',
+  bio3: 'Su tesis doctoral, recientemente depositada en la Universitat de Barcelona, desarrolla un sistema diagnóstico basado en IA para la conservación de restos óseos pleistocenos.',
+  accessLabel: '05 / Acceso', accessTitle: 'MTC en ChatGPT.',
+  accessText: 'El complemento permite acceder a la implementación del modelo en ChatGPT.',
+  accessButton: 'Ver complemento en ChatGPT ↗',
+  accessNote: 'El acceso depende de la disponibilidad del complemento y de las opciones de tu cuenta de ChatGPT. Esta página presenta el proyecto; el diagnóstico se realiza dentro de ChatGPT.',
+  footer: 'MTC · Modelo Tafonómico para Conservación'
+};
+const elements = [...document.querySelectorAll('[data-t]')];
+const english = Object.fromEntries(elements.map(el => [el.dataset.t, el.textContent]));
+const descriptions = {
+  en: 'MTC: a tool supporting conservation-restoration diagnosis of Pleistocene bone remains, implemented using artificial intelligence.',
+  es: 'MTC: una herramienta de apoyo al diagnóstico de conservación-restauración de restos óseos pleistocenos, implementada mediante inteligencia artificial.'
+};
+function setLanguage(lang) {
+  const isSpanish = lang === 'es';
+  const texts = isSpanish ? spanish : english;
+  document.documentElement.lang = lang;
+  elements.forEach(el => { el.textContent = texts[el.dataset.t]; });
+  document.title = isSpanish ? 'MTC · Modelo Tafonómico para Conservación' : 'MTC · Taphonomic Model for Conservation';
+  document.querySelector('meta[name="description"]').content = descriptions[lang];
+  document.getElementById('navegacion').setAttribute('aria-label', isSpanish ? 'Navegación principal' : 'Main navigation');
+  document.getElementById('niveles').setAttribute('aria-label', isSpanish ? 'Niveles del modelo' : 'Model levels');
+  document.getElementById('craneo').alt = isSpanish ? 'Cráneo ilustrado en tinta negra, imagen de MTC' : 'Skull illustration in black ink, the MTC image';
+  document.querySelectorAll('[data-lang]').forEach(button => {
+    button.setAttribute('aria-pressed', String(button.dataset.lang === lang));
+  });
+}
+document.querySelectorAll('[data-lang]').forEach(button => {
+  button.addEventListener('click', () => setLanguage(button.dataset.lang));
+});
+</script>
 </body>
 </html>
